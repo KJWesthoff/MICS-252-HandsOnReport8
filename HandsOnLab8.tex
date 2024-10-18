@@ -112,20 +112,52 @@ Scattered Spider are able to conduct elaborate social engineering campaigns, usi
 \subsubsection{The MGM attack} \cite{UHonMGM-ALPHV} has a good write-up on how Scattered Spider gained initial foothold.
 
 \begin{enumerate}
-	\item Use OSint LinkedIn to identify a suitable employee and assume their identity
+	\item Use OSint (LinkedIn etc.) to identify a suitable employee and assume their identity
 	\item Call MGM IT requesting assistance to log in
 	\item A 10 minute phone call allegedly gave administrator privileges to MGM OKTA and Azure environments even with MFM in place (using phone sim hijacking)
-	\item Deploy malware and start extortion
+	\item Deploy reconnaissance and terminate security software (POORTRY/STONESTOP see Appendix \ref{app:DetectionAvoidance})\cite{TrellixScattetedSpider}
+	\item Deploy command and control for persistence and ex-filtration
 \end{enumerate}
 
-\subsubsection{Modus Operandi Summary} Use knowledge of systems and elaborate social engineering (voice phishing (vishing)) and advanced techniques  (sim hijacking) to convince victim to provide credentials (even when these are multi factor (MFM))
+\subsubsection{Modus Operandi Summary} Use knowledge of systems and elaborate social engineering (voice phishing, "vishing") and advanced techniques  (sim hijacking) to convince victim to provide credentials (even when these are multi factor (MFA))
 
 \subsection{TTP's}
-
+CISA article \cite{CISA_ScattetedSpider} Has a detailed set of tables with the MITRE att\&ck Tactics and Techniques a condensed summary there of is :
+\begin{itemize}
+	\item Reconnaissance:
+	      \begin{itemize}
+		      \item Gather victim identities using SoMe profiles
+		      \item Gather information in victim system/architecture
+	      \end{itemize}
+	\item Resource Development
+	      \begin{itemize}
+		      \item Fake SoMe accounts to back up phishing stories
+		      \item Establish ephemeral domains
+		      \item Phone SIM hijacking, number stealing
+	      \end{itemize}
+	\item Initial Access, using 'Social Engineering'
+	      \begin{itemize}
+		      \item Phishing targeted against IT access control, either posing as IT asking for credentials, or posing as employees requesting MFA reset etc.
+		      \item Elaborate, convincing phone voice phishing 'acts' (Vishing), fluent in English
+		      \item SMS phishing using hijacked numbers to convince credentials handover (smishing)
+		      \item MFA fatigue (someone accepting after receiving many MFA approval notifications)
+	      \end{itemize}
+	\item Execution, Persistence, Privilege Escalation, Defense Evation
+	      \begin{itemize}
+		      \item Collect data, credentials etc. using e.g Mimikatz see Appendix \ref{app:SoftwareTools}
+		      \item Impersonate IT gain remote desktop access (again requiring social skills to be convincing)
+		      \item Create new users
+	      \end{itemize}
+	\item Extortion and data theft
+	      \begin{itemize}
+		      \item Establish C2 infrastructure
+		      \item Gather, compress and ex filtrate data
+		      \item Start extortion campaign
+	      \end{itemize}
+\end{itemize}
 \subsection{Recommendations}
 
 
-\section{Summary}
 
 \section{Conclusion}
 I'm not so sure they can keep the vishing campaigns up, the use of their voice gives possibility for profiling and subsequent attribution
@@ -212,7 +244,12 @@ The one size fits all for cloud security means that the same holes are found in 
 		\label{fig:CISATools2}
 	\end{figure}
 
-
+	\section{Tools used to evade detection}\label{app:DetectionAvoidance}
+	Scattered Spider typically exploits vulnerabilities such as CVE-2015-2291 \cite{TrellixScattetedSpider}
+	\begin{itemize}
+		\item{POORTRY is a malicious driver used to terminate selected processes on Windows systems, e.g., Endpoint Detection and Response (EDR) agent on an endpoint.11 To evade detection, attackers have signed POORTRY driver with a Microsoft Windows Hardware Compatibility Authenticode signature.}
+		\item{STONESTOP is a Windows userland utility that attempts to terminate processes by creating and loading a malicious driver.13 It functions as both a loader/installer for POORTRY, as well as an orchestrator to instruct the driver with what actions to perform}
+	\end{itemize}
 
 
 
