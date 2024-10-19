@@ -84,9 +84,10 @@ MICS Course 252 Fall 2024 (Kristy Westphal)
 
 \section{Introduction}
 Threat intelligence is when an adversary is associated with the data. To better understand adversaries and how to account for them in threat modeling, it is useful to put adversaries into categories defined by what they want, what their capabilities are, and how they conduct their 'activities'\footnote{Tactics Techniques and Procedures (TTP), "modus operandi" in classic spy terms} in this assignment I decided to look at threat actors who target cloud 'systems', many 'things' are moving/have moved to the cloud\footnote{A 'reaction' going in the opposite direction, in-sourcing and self-hosting is also occurring\cite{DHH_leftTheCloud}}. Cloud-ification offers security benefits:
+
 \begin{itemize}
-	\item Someone else handles security often with synergies doing it for many customers
-	\item Increased reliability, and availability etc.
+	\item Someone else handles security often with synergies for many customers
+	\item Increased reliability, availability and advancement level
 \end{itemize}
 
 But is also comes with a significant problem:
@@ -94,11 +95,11 @@ But is also comes with a significant problem:
 	\item Someone else is handling your security
 \end{itemize}
 
-With a 'someone else' is handling parts of your security as a part of their hosting service, there is a risk for responsibilities "falling between two stools", especially in complicated architectures with services from different cloud systems. This often makes enterprises terrible at security \cite{CloudComputingInsider} defines a "toxic cloud triad" of highly privileged, publicly exposed workloads with weak configuration. The adversaries know this and targets default configuration and especially access control to breach and achieve persistence on cloud systems.
+With a 'someone else' handling parts of your security as a part of their hosting service, there is a risk for responsibilities "falling between two stools", especially in complicated architectures with services from different cloud systems. This often makes enterprises terrible at security \cite{CloudComputingInsider} coins a term: "toxic cloud triad" of highly privileged, publicly exposed workloads with weak configuration. The adversaries know this and targets default configuration and especially access control to breach and achieve persistence on cloud systems.
 
 \section{Scattered Spider}
 \subsection{Description}
-According to MITRE\cite{MITRE_ScatteredSpider} Scattered Spider has been active since 2022, and initially targeted customer relations systems and telecommunication companies. Apparently they figured out that they were good at obtaining credentials to systems using social engineering. They did this by portraying to be employees or internal IT often in longer duration social engineering acts, Hence MITRE concluded that they are native English speakers. Crowdstrike included a section on Scattered Spider in their 2024 Global Threat Report \cite{CrowdStrikeGTR2024}, shown in Appendix \ref{app:CrowdStrikeScatteredSpider} and describes their modus of targeting IT services using elaborate social engineering.
+According to MITRE\cite{MITRE_ScatteredSpider} Scattered Spider has been active since 2022, and initially targeted customer relations systems and telecommunication companies. Apparently they figured out that they were good at obtaining credentials using social engineering. They did this by portraying to be employees or internal IT often in longer duration social engineering acts, Hence MITRE concluded that they are native English speakers. Crowdstrike included a section on Scattered Spider in their 2024 Global Threat Report \cite{CrowdStrikeGTR2024}, shown in Appendix \ref{app:CrowdStrikeScatteredSpider} and describes their modus of targeting IT services using elaborate social engineering.
 
 \subsection{Targets}
 CISA\cite{CISA_ScattetedSpider} has defined Scattered Spider as a cyber criminal group targeting information systems of large companies for extortion. \\
@@ -107,27 +108,26 @@ Most notably the group targeted the "MGM Grand" casino resort, the attack was ca
 \subsubsection{Targets summary:} Larger corporations for extortion
 
 \subsection{Modus Operandi}
-Scattered Spider are able to conduct elaborate social engineering campaigns, using open intelligence (LinkedIn etc.) to circumvent security measures (see quote in Appendix \ref{app:voxSocialEngQuote}). Furthermore they are able to leverage deep knowledge on various cloud systems (Azure Active Directory) and identity management (OKTA) get a foothold. From there various tools for monitoring and ex filtration (Fleetdeck etc.), credential extraction (e.g. Mimikatz) and malware (eg. ransomware) are deployed. CISA has compiled a list based on MITRE Att\&ck in \cite{CISA_ScattetedSpider} and depicted in Appendix \ref{app:SoftwareTools}. \\
+Scattered Spider are able to conduct elaborate social engineering campaigns, using open intelligence (LinkedIn etc.) to circumvent security measures (see quote from a CISO in Appendix \ref{app:voxSocialEngQuote}). Furthermore they are able to leverage deep knowledge on various cloud systems (Azure Active Directory) and identity management (OKTA) to get a foothold. From there various tools for monitoring and ex filtration (Fleetdeck etc.), credential extraction (e.g. Mimikatz) and malware (eg. ransomware) are deployed. CISA has compiled a list based on MITRE Att\&ck in \cite{CISA_ScattetedSpider} and shown in Appendix \ref{app:SoftwareTools}. \\
 
-\subsubsection{The MGM attack} \cite{UHonMGM-ALPHV} has a good write-up on how Scattered Spider gained initial foothold.
+\subsubsection{The MGM attack} UH\cite{UHonMGM-ALPHV} has a good write-up on how Scattered Spider gained initial foothold:
 
 \begin{enumerate}
 	\item Use OSint (LinkedIn etc.) to identify a suitable employee and assume their identity
-	\item Call MGM IT requesting assistance to log in
-	\item A 10 minute phone call allegedly gave administrator privileges to MGM OKTA and Azure environments even with MFM in place (using phone sim hijacking)
+	\item Call MGM IT services requesting assistance to log in
+	\item A 10 minute phone call allegedly gave administrator privileges to MGM's OKTA authentication and Azure environments even with MFA\footnote{Multi Factor Authentication} in place (using phone SIM hijacking)
 	\item Deploy reconnaissance and terminate security software (POORTRY/STONESTOP see Appendix \ref{app:DetectionAvoidance})\cite{TrellixScattetedSpider}
 	\item Deploy command and control for persistence and ex-filtration
 \end{enumerate}
 
-\subsubsection{Modus Operandi Summary} Use knowledge of systems and elaborate social engineering (voice phishing, "vishing") and advanced techniques  (sim hijacking) to convince victim to provide credentials (even when these are multi factor (MFA))
+\subsubsection{Modus Operandi Summary} Scattered Spider uses knowledge of systems and elaborate social engineering (voice phishing, "vishing") and advanced techniques  (sim hijacking) to convince a victim to provide credentials (even when these are MFA)
 
-\subsection{TTP's}
-CISA article \cite{CISA_ScattetedSpider} Has a detailed set of tables with the MITRE att\&ck Tactics and Techniques a condensed summary there of is :
+\subsection{Tactics, Techniques and Procedures (TTP's)}
+CISA article \cite{CISA_ScattetedSpider} Has a detailed set of tables with the MITRE att\&ck Tactics and Techniques summary there of is :
 \begin{itemize}
 	\item Reconnaissance/Resource Development:
 	      \begin{itemize}
 		      \item Gather victim identities using SoMe profiles
-		      \item Gather information in victim system/architecture
 		      \item Fake SoMe accounts to back up phishing stories
 		      \item Phone SIM hijacking, number stealing
 	      \end{itemize}
@@ -141,55 +141,33 @@ CISA article \cite{CISA_ScattetedSpider} Has a detailed set of tables with the M
 	\item Execution, Persistence, Privilege Escalation, Defense Evation
 	      \begin{itemize}
 		      \item Collect data, credentials etc. using e.g Mimikatz see Appendix \ref{app:SoftwareTools}
-		      \item Impersonate IT gain remote desktop access (again requiring social skills to be convincing)
-		      \item Create new users
+		      \item Impersonate IT, gain remote desktop access (again requiring social skills to be convincing)
+		      \item Create new users for their use
 	      \end{itemize}
 	\item Extortion and data theft
 	      \begin{itemize}
 		      \item Establish C2 infrastructure see Appendix \ref{app:SoftwareTools}
-		      \item Gather, compress and ex filtrate data
+		      \item Gather, compress and ex-filtrate data
 		      \item Extort Victim
 	      \end{itemize}
 \end{itemize}
 \subsection{Recommendations}
-
+A significant part of what Scattered Spider do is advanced social engineering, utilizing the industry procedures for multi factor authentication. A way to remedy this is to put more elaborate measures in place around credentials:
+\begin{itemize}
+	\item Multiple approvals when issuing MFA or use once sign on (Slower, more resources)
+	\item Inform that the threat is real, so staff are alert and suspicious
+	\item Tight inventory management, make sure you know all hardware that logs on
+	\item Look for traces of the tools used for persistence and C2 in Appendix \ref{app:SoftwareTools} (This is less reliable as tools evolve over time)
+	\item Keep software updated
+\end{itemize}
 
 
 \section{Conclusion}
-I'm not so sure they can keep the vishing campaigns up, the use of their voice gives possibility for profiling and subsequent attribution
-
-
-
-\section{Notes}
-Include how the group typically targets, the methods that they use, and what their typical goal is.
-
-1. Begin by choosing a threat actor group from the MITRE page.\\
-2. Utilizing open source intelligence, research who the group typically targets, what methods they use to attack their targets and what they are generally after.\\
-3.Identify any known tactics, techniques and procedures.\\
-4. Make recommendations on actions that a SOC can take with the data that you have found on your chosen threat group. \\
-5. Be sure to document all of the sources that you utilize in your research. \\
-
-
-\section{Notes}
 The one size fits all for cloud security means that the same holes are found in many walls. This can be utilized to get a foothold in many locations using the same methodology.
 
+I'm not so sure they can keep the vishing campaigns up, the use of their voice gives possibility for profiling and subsequent attribution
 
-
-
-
-
-
-
-
-
-
-%\begin{figure}[!htp] % Single column :figure	
-%	\centering
-% 	\includegraphics[width=0.5\linewidth]{STRIDE.png}
-% 	\caption{The STRIDE model summarized, illustration from \cite{STRIDE_For_pay_Medium}}
-% 	\label{fig:STRIDE}
-% \end{figure}
-%
+\clearpage
 
 %----------------------------------------------------------------------------------------
 %	 REFERENCES
